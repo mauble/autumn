@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::animation;
+
 #[derive(Component)]
 pub struct Player {
     direction: Vec3,
@@ -10,12 +12,12 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_player)
+        app.add_systems(Startup, spawn_player)
             .add_systems(Update, move_player);
     }
 }
 
-pub fn setup_player(mut commands: Commands) {
+pub fn spawn_player(mut commands: Commands) {
     commands.spawn((
         Transform::from_translation(Vec3::new(0., 0., 0.)),
         Sprite {

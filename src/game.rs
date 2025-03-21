@@ -6,13 +6,13 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_game.after(player::setup_player))
+        app.add_systems(Startup, spawn_game.after(player::spawn_player))
             .add_systems(Update, update_game)
             .add_plugins(player::PlayerPlugin);
     }
 }
 
-fn setup_game(mut commands: Commands, player_query: Query<&Transform, With<player::Player>>) {
+fn spawn_game(mut commands: Commands, player_query: Query<&Transform, With<player::Player>>) {
     if let Ok(player_pos) = player_query.get_single() {
         commands.spawn((
             Transform::from_translation(player_pos.translation),
