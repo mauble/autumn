@@ -1,3 +1,19 @@
+use bevy::prelude::*;
+
 fn main() {
-    println!("Hello, world!");
+    App::new()
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: String::from("Autumn"),
+                        resolution: Vec2::new(1280., 720.).into(),
+                        resizable: false,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(ImagePlugin::default_nearest()),
+        )
+        .run();
 }
