@@ -1,3 +1,5 @@
+mod game;
+
 use bevy::prelude::*;
 
 fn main() {
@@ -15,5 +17,7 @@ fn main() {
                 })
                 .set(ImagePlugin::default_nearest()),
         )
+        .insert_resource(ClearColor(Color::BLACK))
+        .add_plugins(game::GamePlugin)
         .run();
 }
