@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-struct Player {
+pub struct Player {
     direction: Vec3,
     speed: f32,
 }
@@ -10,12 +10,12 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_player)
+        app.add_systems(Startup, setup_player)
             .add_systems(Update, move_player);
     }
 }
 
-fn spawn_player(mut commands: Commands) {
+fn setup_player(mut commands: Commands) {
     commands.spawn((
         Transform::from_translation(Vec3::new(0., 0., 0.)),
         Sprite {
@@ -31,8 +31,8 @@ fn spawn_player(mut commands: Commands) {
 }
 
 fn move_player(
-    keys: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
+    keys: Res<ButtonInput<KeyCode>>,
     mut query: Query<(&mut Player, &mut Transform)>,
 ) {
     let (mut player, mut transform) = query.single_mut();
