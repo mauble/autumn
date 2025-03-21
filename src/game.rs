@@ -1,10 +1,13 @@
 use bevy::prelude::*;
 
+use crate::player;
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(()).add_systems(Startup, setup_scene);
+        app.add_plugins(player::PlayerPlugin)
+            .add_systems(Startup, setup_scene);
     }
 }
 
