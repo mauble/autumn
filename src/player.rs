@@ -15,7 +15,7 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-fn setup_player(mut commands: Commands) {
+pub fn setup_player(mut commands: Commands) {
     commands.spawn((
         Transform::from_translation(Vec3::new(0., 0., 0.)),
         Sprite {
@@ -35,23 +35,23 @@ fn move_player(
     keys: Res<ButtonInput<KeyCode>>,
     mut query: Query<(&mut Player, &mut Transform)>,
 ) {
-    let (mut player, mut transform) = query.single_mut();
+    if let Ok((mut player, mut transform)) = query.get_single_mut() {
+        player.direction = Vec3::ZERO;
 
-    player.direction = Vec3::ZERO;
+        if keys.pressed(KeyCode::ArrowUp) {
+            player.direction.y += 1.;
+        }
+        if keys.pressed(KeyCode::ArrowDown) {
+            player.direction.y -= 1.;
+        }
+        if keys.pressed(KeyCode::ArrowLeft) {
+            player.direction.x -= 1.;
+        }
+        if keys.pressed(KeyCode::ArrowRight) {
+            player.direction.x += 1.;
+        }
 
-    if keys.pressed(KeyCode::ArrowUp) {
-        player.direction.y += 1.;
+        player.direction = player.direction.normalize_or_zero();
+        transform.translation += time.delta_secs() * player.direction * player.speed;
     }
-    if keys.pressed(KeyCode::ArrowDown) {
-        player.direction.y -= 1.;
-    }
-    if keys.pressed(KeyCode::ArrowLeft) {
-        player.direction.x -= 1.;
-    }
-    if keys.pressed(KeyCode::ArrowRight) {
-        player.direction.x += 1.;
-    }
-
-    player.direction = player.direction.normalize_or_zero();
-    transform.translation += time.delta_secs() * player.direction * player.speed;
 }
