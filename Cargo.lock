@@ -297,6 +297,7 @@ name = "autumn"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_spritesheet_animation",
 ]
 
 [[package]]
@@ -1036,6 +1037,16 @@ dependencies = [
  "nonmax",
  "radsort",
  "rectangle-pack",
+]
+
+[[package]]
+name = "bevy_spritesheet_animation"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "179ede9b17832dd179964814481f87761cf821ed732cd47d951d14f4d6aede19"
+dependencies = [
+ "bevy",
+ "bevy_internal",
 ]
 
 [[package]]
