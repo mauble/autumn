@@ -6,13 +6,13 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_game.after(player::spawn_player))
+        app.add_systems(Startup, setup_game.after(player::setup_player))
             .add_systems(Update, update_game)
             .add_plugins(player::PlayerPlugin);
     }
 }
 
-fn spawn_game(mut commands: Commands, player_query: Query<&Transform, With<player::Player>>) {
+fn setup_game(mut commands: Commands, player_query: Query<&Transform, With<player::Player>>) {
     if let Ok(player_pos) = player_query.get_single() {
         commands.spawn((
             Transform::from_translation(player_pos.translation),
@@ -31,7 +31,7 @@ fn update_game(
             let current_pos = camera_pos.translation;
             let target_pos = player_pos.translation;
 
-            let lerp_factor = 10.0 * time.delta_secs();
+            let lerp_factor = 5.0 * time.delta_secs();
 
             camera_pos.translation = current_pos + (target_pos - current_pos) * lerp_factor;
         }
