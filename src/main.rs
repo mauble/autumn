@@ -1,6 +1,6 @@
-mod animation;
 mod game;
 mod player;
+mod utils;
 
 use bevy::prelude::*;
 
