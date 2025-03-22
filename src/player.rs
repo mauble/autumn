@@ -62,11 +62,6 @@ pub fn setup_player(
             last_direction: "down",
             speed: 100.0,
         },
-        Transform {
-            translation: Vec3::new(0., 0., 0.),
-            scale: Vec3::splat(5.0),
-            ..default()
-        },
         Sprite::from_atlas_image(
             texture_handle,
             TextureAtlas {
@@ -74,6 +69,11 @@ pub fn setup_player(
                 ..default()
             },
         ),
+        Transform {
+            translation: Vec3::new(0., 0., 0.),
+            scale: Vec3::splat(5.0),
+            ..default()
+        },
         SpritesheetAnimation::from_id(library.animation_with_name("idle_down").unwrap()),
     ));
 }
