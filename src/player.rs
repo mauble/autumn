@@ -60,7 +60,7 @@ pub fn setup_player(
         Player {
             direction: Vec3::ZERO,
             last_direction: "down",
-            speed: 100.0,
+            speed: 250.0,
         },
         Sprite::from_atlas_image(
             texture_handle,
