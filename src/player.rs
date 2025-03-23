@@ -6,9 +6,10 @@ use crate::utils::create_directional_animations;
 
 #[derive(Component)]
 pub struct Player {
-    direction: Vec3,
-    last_direction: &'static str,
     speed: f32,
+    direction: Vec3,
+    anim_type: &'static str,
+    anim_direction: &'static str,
 }
 
 pub struct PlayerPlugin;
@@ -52,15 +53,16 @@ pub fn setup_player(
             ("right", (16, 19)),
             ("left", (16, 19)),
         ]),
-        AnimationDuration::PerFrame(250),
+        AnimationDuration::PerFrame(220),
         AnimationRepeat::Loop,
     );
 
     commands.spawn((
         Player {
+            speed: 225.,
             direction: Vec3::ZERO,
-            last_direction: "down",
-            speed: 250.0,
+            anim_type: "idle",
+            anim_direction: "down",
         },
         Sprite::from_atlas_image(
             texture_handle,
@@ -70,7 +72,7 @@ pub fn setup_player(
             },
         ),
         Transform {
-            translation: Vec3::new(0., 0., 0.),
+            translation: Vec3::new(0., 0., 1.),
             scale: Vec3::splat(5.0),
             ..default()
         },
@@ -81,48 +83,59 @@ pub fn setup_player(
 fn move_player(
     time: Res<Time>,
     keys: Res<ButtonInput<KeyCode>>,
-    mut query: Query<(&mut Player, &mut Transform, &mut SpritesheetAnimation)>,
     library: Res<AnimationLibrary>,
+    mut query: Query<(&mut Player, &mut Transform, &mut SpritesheetAnimation)>,
 ) {
     if let Ok((mut player, mut transform, mut animation)) = query.get_single_mut() {
         player.direction = Vec3::ZERO;
 
-        let directions = HashMap::from([
-            ("up", (KeyCode::ArrowUp, Vec3::Y)),
-            ("down", (KeyCode::ArrowDown, -Vec3::Y)),
-            ("right", (KeyCode::ArrowRight, Vec3::X)),
-            ("left", (KeyCode::ArrowLeft, -Vec3::X)),
-        ]);
+        let directions = [
+            (KeyCode::ArrowLeft, -Vec3::X),
+            (KeyCode::ArrowRight, Vec3::X),
+            (KeyCode::ArrowUp, Vec3::Y),
+            (KeyCode::ArrowDown, -Vec3::Y),
+        ];
 
-        for (anim_suffix, (key, direction)) in directions.iter() {
+        for (key, direction) in directions.iter() {
             if keys.pressed(*key) {
-                player.direction += direction;
-
-                if let Some(run_animation_id) =
-                    library.animation_with_name(&format!("run_{}", player.last_direction))
-                {
-                    if animation.animation_id != run_animation_id
-                        || !keys.pressed(directions[player.last_direction].0)
-                    {
-                        player.last_direction = anim_suffix;
-                        animation.switch(run_animation_id);
-                        if direction.x != 0. {
-                            transform.scale.x = transform.scale.x.abs() * direction.x;
-                        }
-                    }
-                }
+                player.direction += *direction;
             }
         }
 
-        if player.direction.length() > 0. {
+        if player.direction == Vec3::ZERO {
+            player.anim_type = "idle";
+        } else {
+            player.anim_type = "run";
+            player.anim_direction = match player.direction.x.abs() > player.direction.y.abs() {
+                true => {
+                    if player.direction.x > 0.0 {
+                        "right"
+                    } else {
+                        "left"
+                    }
+                }
+                false => {
+                    if player.direction.y > 0.0 {
+                        "up"
+                    } else {
+                        "down"
+                    }
+                }
+            };
+
             player.direction = player.direction.normalize_or_zero();
             transform.translation += time.delta_secs() * player.direction * player.speed;
-        } else {
-            if let Some(idle_animation_id) =
-                library.animation_with_name(&format!("idle_{}", player.last_direction))
-            {
-                if animation.animation_id != idle_animation_id {
-                    animation.switch(idle_animation_id);
+        }
+
+        if let Some(animation_id) =
+            library.animation_with_name(&format!("{}_{}", player.anim_type, player.anim_direction))
+        {
+            if animation.animation_id != animation_id {
+                animation.switch(animation_id);
+                if player.anim_direction == "left" {
+                    transform.scale.x = transform.scale.x.abs() * -1.;
+                } else {
+                    transform.scale.x = transform.scale.x.abs();
                 }
             }
         }
