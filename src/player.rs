@@ -106,20 +106,17 @@ fn move_player(
             player.anim_type = "idle";
         } else {
             player.anim_type = "run";
-            player.anim_direction = match player.direction.x.abs() > player.direction.y.abs() {
-                true => {
-                    if player.direction.x > 0.0 {
-                        "right"
-                    } else {
-                        "left"
-                    }
+            player.anim_direction = if player.direction.x.abs() > player.direction.y.abs() {
+                if player.direction.x > 0.0 {
+                    "right"
+                } else {
+                    "left"
                 }
-                false => {
-                    if player.direction.y > 0.0 {
-                        "up"
-                    } else {
-                        "down"
-                    }
+            } else {
+                if player.direction.y > 0.0 {
+                    "up"
+                } else {
+                    "down"
                 }
             };
 
