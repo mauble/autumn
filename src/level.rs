@@ -3,9 +3,9 @@ use bevy_ecs_tiled::prelude::*;
 
 use crate::player;
 
-pub struct GamePlugin;
+pub struct LevelPlugin;
 
-impl Plugin for GamePlugin {
+impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_game.after(player::setup_player))
             .add_systems(Update, update_game)

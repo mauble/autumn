@@ -1,4 +1,4 @@
-mod game;
+mod level;
 mod player;
 mod utils;
 
@@ -20,6 +20,6 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .insert_resource(ClearColor(Color::BLACK))
-        .add_plugins(game::GamePlugin)
+        .add_plugins(level::LevelPlugin)
         .run();
 }
